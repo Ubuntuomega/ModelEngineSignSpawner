@@ -23,12 +23,8 @@
             <version>R2.1.5</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.16.2-R0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -37,8 +33,9 @@
         <repository>
             <id>nexus</id>
             <name>Lumine Releases</name>
-            <url>http://mvn.lumine.io/repository/maven-releases/</url>
+            <url>http://mvn.lumine.io/repository/maven-public/</url>
         </repository>
+
     </repositories>
     <build>
         <plugins>

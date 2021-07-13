@@ -1,16 +1,19 @@
-name: ModelEngineSpawner
+name: ModelEngineSignSpawner
 main: com.elmakers.mine.bukkit.plugins.ModelEngineSpawner
 version: 1.0
 api-version: 1.16
-author: NathanWolf
-description: A plugin to test ModelEngine models
+author: NathanWolf, Ubuntuomega
+description: Plugin para hacer carteles con modelos 3D
 depend: [ModelEngine]
 commands:
   spawnmodel:
     description: Spawn a mob with a model attached
-    usage: /spawnmodel <model> [mob]
+    usage: /spawnmodel <model>
     permission: ModelEngineSpawner.commands.spawnmodel
 permissions:
   "ModelEngineSpawner.commands.spawnmodel":
     description: A player may use the spawnmodel command
+    default: op
+  "ModelEngineSpawner.destroy":
+    description: A player can destroy a 3D Sign
     default: op
