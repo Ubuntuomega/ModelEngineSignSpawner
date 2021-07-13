@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -14,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -24,14 +26,14 @@ import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
 
-public class ModelEngineSpawner extends JavaPlugin implements TabExecutor {
+public class ModelEngineSignSpawner extends JavaPlugin implements TabExecutor {
     private static final ChatColor CHAT_PREFIX = ChatColor.AQUA;
     private static final ChatColor ERROR_PREFIX = ChatColor.RED;
     private static final int MAX_RANGE = 64;
     private static final Set<Material> transparent = ImmutableSet.of(Material.AIR, Material.CAVE_AIR, Material.TALL_GRASS);
 
     public void onEnable() {
-        PluginCommand command = getCommand("spawnmodel");
+        PluginCommand command = getCommand("spawnsign");
         if (command != null){
             command.setExecutor(this);
             command.setTabCompleter(this);
@@ -39,6 +41,7 @@ public class ModelEngineSpawner extends JavaPlugin implements TabExecutor {
     }
 
     public void onDisable() {
+
     }
 
     @Override
@@ -51,26 +54,41 @@ public class ModelEngineSpawner extends JavaPlugin implements TabExecutor {
             return true;
         }
         String modelName = args[0];
-        String mobType = args.length > 1 ? args[1] : "husk";
-        EntityType entityType;
-        try {
-            entityType = EntityType.valueOf(mobType.toUpperCase());
-        } catch (Exception ex) {
-            sendError(sender, "Invalid mod type: " + ChatColor.WHITE + mobType);
-            return true;
-        }
+        EntityType entityType = EntityType.ARMOR_STAND;
+
         Player player = (Player)sender;
         Block block = player.getTargetBlock(transparent, MAX_RANGE);
         if (transparent.contains(block.getType())) {
             sendError(sender, "You must be looking at a block");
             return true;
         }
+
         block = block.getRelative(BlockFace.UP);
-        Entity mob = block.getWorld().spawnEntity(block.getLocation(), entityType);
+        Location posicion = block.getLocation();
+        posicion.setY(posicion.getY()+0.5);
+        Entity mob = block.getWorld().spawnEntity(posicion, entityType);
+        mob.setGravity(false);
+
+
+        int yaw = (int) player.getEyeLocation().getYaw();
+
+        if(yaw >= 45 && yaw < 135){ //South
+            mob.setRotation(270,0);
+        }
+        else if(yaw >= 135 && yaw < 180) { //West
+            mob.setRotation(360,0);
+        }
+        else if(yaw >= 180 && yaw < 225) { //North
+            mob.setRotation(90,0);
+        } else { //East
+            mob.setRotation(180,0);
+        }
+
         if (!mob.isValid()) {
             sendError(sender, "Failed to spawn mob of type: " + ChatColor.WHITE + entityType);
             return true;
         }
+
         ActiveModel model = ModelEngineAPI.api.getModelManager().createActiveModel(modelName);
         if (model == null) {
             sendError(sender, "Failed to load model: " + ChatColor.WHITE + modelName);
@@ -92,7 +110,7 @@ public class ModelEngineSpawner extends JavaPlugin implements TabExecutor {
 
     public List<String> onTabComplete(String command, String[] args) {
         List<String> options = new ArrayList<>();
-        if (command.equals("spawnmodel")) {
+        if (command.equals("spawnsign")) {
             if (args.length == 1) {
                 Collection<String> models = ModelEngineAPI.api.getModelManager().getModelRegistry().getRegisteredModel().keySet();
                 options.addAll(models);
