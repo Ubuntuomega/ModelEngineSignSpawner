@@ -72,16 +72,20 @@ public class ModelEngineSignSpawner extends JavaPlugin implements TabExecutor {
 
         int yaw = (int) player.getEyeLocation().getYaw();
 
-        if(yaw >= 45 && yaw < 135){ //South
-            mob.setRotation(270,0);
-        }
-        else if(yaw >= 135 && yaw < 180) { //West
-            mob.setRotation(360,0);
-        }
-        else if(yaw >= 180 && yaw < 225) { //North
+        if (yaw >=-135 && yaw <-45) { //East
             mob.setRotation(90,0);
-        } else { //East
+
+        }
+        else if(yaw >= -45 && yaw < 45) { //South
             mob.setRotation(180,0);
+        }
+        else if(yaw >= 45 && yaw < 135) { //West
+            mob.setRotation(-90,0);
+
+        }
+        else  { //North
+            mob.setRotation(0,0);
+
         }
 
         if (!mob.isValid()) {
