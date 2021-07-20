@@ -5,11 +5,27 @@ api-version: 1.17
 author: NathanWolf, Ubuntuomega
 description: Plugin para hacer carteles con modelos 3D
 depend: [ModelEngine]
+
 commands:
   spawnsign:
     description: Spawn a armorstand with a model attached
     usage: /spawnmodel <model>
     permission: ModelEngineSpawner.commands.spawnmodel
+  showsign:
+      description: Spawn a armorstand with a model attached
+      usage: /showsign
+      permission: ModelEngineSpawner.commands.spawnmodel
+  hidesign:
+    description: Spawn a armorstand with a model attached
+    usage: /hidesign
+    permission: ModelEngineSpawner.commands.spawnmodel
+
+  checksign:
+    description: Spawn a armorstand with a model attached
+    usage: /checksign
+    permission: ModelEngineSpawner.commands.spawnmodel
+
+
 permissions:
   "ModelEngineSignSpawner.commands.spawnsign":
     description: A player may use the spawnmodel command
