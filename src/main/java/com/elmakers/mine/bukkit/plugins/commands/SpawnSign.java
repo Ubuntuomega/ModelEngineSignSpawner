@@ -17,7 +17,6 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
@@ -48,6 +47,8 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
 
         block = block.getRelative(BlockFace.UP);
         Location posicion = block.getLocation();
+
+        //Center the armorstand in the block
         posicion.setX(posicion.getX()+0.5);
         posicion.setZ(posicion.getZ()+0.5);
 
@@ -96,7 +97,7 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
         modeledEntity.setInvisible(true);
 
         ModelEngineSignSpawner.getDataIO().saveArmorStand(mob);
-        player.sendMessage("Modelo generado exitosamente :D, UUID: "+modeledEntity.getEntity().getUniqueId());
+
 
         return true;
     }
