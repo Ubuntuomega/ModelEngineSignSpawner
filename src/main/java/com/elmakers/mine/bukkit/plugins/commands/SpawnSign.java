@@ -14,9 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import java.util.*;
 
@@ -29,6 +27,7 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (args.length == 0) {
+
             return false;
         }
         if (!(sender instanceof Player)) {
@@ -53,21 +52,25 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
         posicion.setZ(posicion.getZ()+0.5);
 
 
-        Entity mob = block.getWorld().spawnEntity(posicion, entityType);
+
+        Entity mob =  block.getWorld().spawnEntity(posicion, entityType);
+
         mob.setGravity(false);
+        mob.setInvulnerable(true);
+
 
 
         int yaw = (int) player.getEyeLocation().getYaw();
 
         if (yaw >=-135 && yaw <-45) { //East
-            mob.setRotation(90,0);
+            mob.setRotation(90,90);
 
         }
         else if(yaw >= -45 && yaw < 45) { //South
-            mob.setRotation(180,0);
+            mob.setRotation(180,180);
         }
         else if(yaw >= 45 && yaw < 135) { //West
-            mob.setRotation(-90,0);
+            mob.setRotation(-90,-90);
 
         }
         else  { //North
@@ -96,7 +99,8 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
         modeledEntity.detectPlayers();
         modeledEntity.setInvisible(true);
 
-        ModelEngineSignSpawner.getDataIO().saveArmorStand(mob);
+
+        ModelEngineSignSpawner.getDataIO().saveModel(mob);
 
 
         return true;

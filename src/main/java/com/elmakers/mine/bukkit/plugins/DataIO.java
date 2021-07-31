@@ -19,34 +19,66 @@ import java.util.UUID;
 public class DataIO implements Listener{
     Plugin plugin;
     FileConfiguration config;
+    static String root = "models.";
 
-    static String root = "armorstands.";
     public DataIO(Plugin plugin){
         this.plugin = plugin;
         this.config = plugin.getConfig();
+
     }
 
-    public void saveArmorStand(Entity armorStand){
-        UUID uuid = armorStand.getUniqueId();
+    /**
+     * Saves a model in the config file
+     * @param armorStand Model that will be saved.
+     */
+    public void saveModel(Entity armorStand){
+        String uuid = armorStand.getUniqueId().toString();
 
-        config.addDefault(root+uuid.toString(),null);
-        config.addDefault(root+uuid.toString()+".x",armorStand.getLocation().getX());
-        config.addDefault(root+uuid.toString()+".y",armorStand.getLocation().getY());
-        config.addDefault(root+uuid.toString()+".z",armorStand.getLocation().getZ());
-        config.addDefault(root+uuid.toString()+".world",armorStand.getLocation().getWorld().getName());
+        ConfigurationSection armorStandSection = config.createSection(root+uuid);
+
+        armorStandSection.addDefault(".x",armorStand.getLocation().getX());
+        armorStandSection.addDefault(".y",armorStand.getLocation().getY());
+        armorStandSection.addDefault(".z",armorStand.getLocation().getZ());
+        armorStandSection.addDefault(".world",armorStand.getLocation().getWorld().getName());
 
         config.options().copyDefaults(true);
         plugin.saveConfig();
     }
 
-    // TODO - Remove the armorstand when it breaks
-    public void removeArmorStand(Entity armorStand){
+    /**
+     * Removes a model saved in the config file.
+     * @param uuid UUID from the model that will be removed.
+     */
+    public void removeModel(UUID uuid){
+        if (exist(uuid)) {
+            plugin.reloadConfig();
+            config = plugin.getConfig();
 
+            config.set(root+uuid, null);
+
+            plugin.saveConfig();
+        }
     }
 
-    public void loadArmorStands(){
-        String root = "armorstands";
+    /**
+     * Check is the uuid is saved in the config.
+     * @param uuid UUID to check
+     * @return true if exist, false if don't exist
+     */
+    public boolean exist(UUID uuid){
+        if (config.contains(root+uuid.toString())){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Loads all models saved in the config file.
+     */
+    public void loadModels(){
+        //String root = "armorstands";
         ConfigurationSection uuidConfigSection = config.getConfigurationSection(root);
+
 
         Set<String> armorStringList = uuidConfigSection.getKeys(false);
 
@@ -54,6 +86,12 @@ public class DataIO implements Listener{
 
         for (String stringUuid : armorStringList){
             ConfigurationSection armorConfigSect = uuidConfigSection.getConfigurationSection(stringUuid);
+
+            //If the config file is empty, don't load anything
+            if (armorConfigSect == null){
+                plugin.getLogger().info("Empty file. Model loading completed.");
+                return;
+            }
 
             //Load the Location of the saved model
             World world = Bukkit.getWorld(armorConfigSect.getString(".world"));
