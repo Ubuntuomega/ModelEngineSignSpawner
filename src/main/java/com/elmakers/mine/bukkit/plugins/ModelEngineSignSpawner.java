@@ -9,12 +9,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerLoadEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class ModelEngineSignSpawner extends JavaPlugin implements TabExecutor, Listener {
 
     private static DataIO dataIO;
+    private static Plugin plugin;
 
     public void onEnable() {
         this.saveDefaultConfig();
@@ -25,11 +27,15 @@ public class ModelEngineSignSpawner extends JavaPlugin implements TabExecutor, L
 
         getServer().getPluginManager().registerEvents(new BreakArmorStandEvent(), this);
         getServer().getPluginManager().registerEvents(this, this);
+        plugin = this;
 
     }
 
     public void onDisable() {
 
+    }
+    public static Plugin getPlugin(){
+        return plugin;
     }
 
     public static DataIO getDataIO(){

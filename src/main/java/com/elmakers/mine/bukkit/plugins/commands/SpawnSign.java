@@ -5,16 +5,20 @@ import com.google.common.collect.ImmutableSet;
 import com.ticxo.modelengine.api.ModelEngineAPI;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Comparator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.*;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -51,32 +55,25 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
         posicion.setX(posicion.getX()+0.5);
         posicion.setZ(posicion.getZ()+0.5);
 
+        int yaw = (int) player.getEyeLocation().getYaw();
 
+        if (yaw >=-135 && yaw <-45) { //East
+            posicion.setYaw(90);
+        }
+        else if(yaw >= -45 && yaw < 45) { //South
+            posicion.setYaw(180);
+        }
+        else if(yaw >= 45 && yaw < 135) { //West
+            posicion.setYaw(-90);
+        }
+        else  { //North
+            posicion.setYaw(0);
+        }
 
         Entity mob =  block.getWorld().spawnEntity(posicion, entityType);
 
         mob.setGravity(false);
         mob.setInvulnerable(true);
-
-
-
-        int yaw = (int) player.getEyeLocation().getYaw();
-
-        if (yaw >=-135 && yaw <-45) { //East
-            mob.setRotation(90,90);
-
-        }
-        else if(yaw >= -45 && yaw < 45) { //South
-            mob.setRotation(180,180);
-        }
-        else if(yaw >= 45 && yaw < 135) { //West
-            mob.setRotation(-90,-90);
-
-        }
-        else  { //North
-            mob.setRotation(0,0);
-
-        }
 
         if (!mob.isValid()) {
             sendError(sender, "Failed to spawn mob of type: " + ChatColor.WHITE + entityType);
@@ -97,7 +94,8 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
 
         modeledEntity.addActiveModel(model);
         modeledEntity.detectPlayers();
-        modeledEntity.setInvisible(true);
+
+        modeledEntity.setInvisible(false);
 
 
         ModelEngineSignSpawner.getDataIO().saveModel(mob);
