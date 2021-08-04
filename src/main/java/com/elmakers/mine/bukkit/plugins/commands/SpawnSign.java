@@ -95,7 +95,7 @@ public class SpawnSign implements TabExecutor, CommandExecutor {
         modeledEntity.addActiveModel(model);
         modeledEntity.detectPlayers();
 
-        modeledEntity.setInvisible(false);
+        modeledEntity.setInvisible(true);
 
 
         ModelEngineSignSpawner.getDataIO().saveModel(mob);
